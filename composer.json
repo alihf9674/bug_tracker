@@ -1,0 +1,23 @@
+{
+    "name": "ali/project1",
+    "require-dev": {
+        "phpunit/phpunit": "^9.6" 
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "alihf9674",
+            "email": "87331595+alihf9674@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}
