@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\Unit\\ConfigTest::testItThrowsExceptionIfNotFound":4,"Tests\\Unit\\ConfigTest::testGetMethodReturnsValidData":3},"times":{"Tests\\Unit\\ConfigTest::testGetContentsReturnsArray":0.001,"Tests\\Unit\\ConfigTest::testItThrowsExceptionIfNotFound":0.011,"Tests\\Unit\\ConfigTest::testGetMethodReturnsValidData":0.002}}
