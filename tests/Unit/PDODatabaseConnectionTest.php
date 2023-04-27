@@ -7,6 +7,7 @@ use App\Helpers\Config;
 use PHPUnit\Framework\TestCase;
 use App\Database\PDODatabaseConnection;
 use App\Contracts\DatabaseConnectionInterface;
+use App\Exceptions\DatabaseConnectionException;
 
 class PDODatabaseConnectionTest extends TestCase
 {
@@ -16,12 +17,28 @@ class PDODatabaseConnectionTest extends TestCase
             $pdoConnection = new PDODatabaseConnection($config);
             $this->assertInstanceOf(DatabaseConnectionInterface::class, $pdoConnection);
       }
-      public function testConnectMethodShouldBeConnectToDatabase()
+      public function testConnectMethodShouldReturnValidInstance()
       {
             $config = $this->getConfig();
             $pdoConnection = new PDODatabaseConnection($config);
+            $pdoHandler = $pdoConnection->connect();
+            $this->assertInstanceOf(PDODatabaseConnection::class, $pdoHandler);
+            return $pdoHandler;
+      }
+      /**
+       * @depends testConnectMethodShouldReturnValidInstance
+       */
+      public function testConnectMethodShouldBeConnectToDatabase($pdoHandler)
+      {
+            $this->assertInstanceOf(PDO::class, $pdoHandler->getConnection());
+      }
+      public function testItThrowsExceptionIfConfigIsInvalid()
+      {
+            $this->expectException(DatabaseConnectionException::class);
+            $config = $this->getConfig();
+            $config['database'] = 'test';
+            $pdoConnection = new PDODatabaseConnection($config);
             $pdoConnection->connect();
-            $this->assertInstanceOf(PDO::class, $pdoConnection->getConnection());
       }
       private function getConfig()
       {
