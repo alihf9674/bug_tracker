@@ -6,6 +6,7 @@ use PDO;
 use App\Helpers\Config;
 use PHPUnit\Framework\TestCase;
 use App\Database\PDODatabaseConnection;
+use App\Exceptions\ConfigNotValidException;
 use App\Contracts\DatabaseConnectionInterface;
 use App\Exceptions\DatabaseConnectionException;
 
@@ -37,6 +38,14 @@ class PDODatabaseConnectionTest extends TestCase
             $this->expectException(DatabaseConnectionException::class);
             $config = $this->getConfig();
             $config['database'] = 'test';
+            $pdoConnection = new PDODatabaseConnection($config);
+            $pdoConnection->connect();
+      }
+      public function testReceivedConfigHaveRequiredKey()
+      {
+            $this->expectException(ConfigNotValidException::class);
+            $config = $this->getConfig();
+            unset($config['db_user']);
             $pdoConnection = new PDODatabaseConnection($config);
             $pdoConnection->connect();
       }

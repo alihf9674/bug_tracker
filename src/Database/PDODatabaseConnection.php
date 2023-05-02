@@ -6,14 +6,22 @@ use PDO;
 
 use PDOException;
 use App\Contracts\DatabaseConnectionInterface;
+use App\Exceptions\ConfigNotValidException;
 use App\Exceptions\DatabaseConnectionException;
 
 class PDODatabaseConnection implements DatabaseConnectionInterface
 {
       protected $connection;
       protected $config;
+      const REQUIRED_CONFIG_KEYS = [
+            'driver', 'host', 'database', 'db_user', 'db_password'
+      ];
+
       public function __construct(array $config)
       {
+            if (!$this->isConfigValid($config)) {
+                  throw new ConfigNotValidException();
+            }
             $this->config = $config;
       }
       public function connect()
@@ -36,5 +44,10 @@ class PDODatabaseConnection implements DatabaseConnectionInterface
       {
             $dsn = "{$config['driver']}:host={$config['host']};dbname={$config['database']}";
             return array($dsn, $config['db_user'], $config['db_password']);
+      }
+      private function isConfigValid(array $config)
+      {
+            $matches = array_intersect(self::REQUIRED_CONFIG_KEYS, array_keys($config));
+            return count($matches) === count(self::REQUIRED_CONFIG_KEYS);
       }
 }
