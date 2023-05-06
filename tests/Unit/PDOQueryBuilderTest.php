@@ -20,18 +20,33 @@ class PDOQueryBuilderTest extends TestCase
       public function testItCanCreateData()
       {
             $result = $this->InserIntoDb();
+            
             $this->assertIsInt($result);
             $this->assertGreaterThan(0, $result);
       }
       public function testItCanUpdateData()
       {
             $this->inserIntoDb();
+
             $result = $this->queryBuilder
                   ->table('bugs')
                   ->where('user', 'User Name')
                   ->where('email', 'EmailAddress@gmail.com')
                   ->update(['email' => 'useremail@gmail.com', 'name' => 'User name']);
             $this->assertEquals(1, $result);
+      }
+      public function testItCanDeleteRecord()
+      {
+            $this->InserIntoDb();
+            $this->InserIntoDb();
+            $this->InserIntoDb();
+            $this->InserIntoDb();
+
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('name', 'First Bug Report')
+                  ->delete();
+            $this->assertEquals(4, $result);
       }
       private function InserIntoDb()
       {

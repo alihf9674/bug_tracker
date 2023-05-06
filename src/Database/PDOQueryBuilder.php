@@ -62,4 +62,12 @@ class PDOQueryBuilder
                   $this->connection->prepare("TRUNCATE TABLE `{$table}`")->execute();
             }
       }
+      public function delete()
+      {
+            $conditions = implode(' AND ', $this->conditions);
+            $sql = "DELETE FROM {$this->table} WHERE {$conditions}";
+            $query = $this->connection->prepare($sql);
+            $query->execute($this->values);
+            return $query->rowCount();
+      }
 }
