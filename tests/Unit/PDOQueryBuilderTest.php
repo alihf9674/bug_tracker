@@ -19,28 +19,26 @@ class PDOQueryBuilderTest extends TestCase
       }
       public function testItCanCreateData()
       {
-            $result = $this->InserIntoDb();
-            
+            $result = $this->insertIntoDb();
             $this->assertIsInt($result);
             $this->assertGreaterThan(0, $result);
       }
       public function testItCanUpdateData()
       {
-            $this->inserIntoDb();
+            $this->insertIntoDb();
 
             $result = $this->queryBuilder
                   ->table('bugs')
                   ->where('user', 'User Name')
-                  ->where('email', 'EmailAddress@gmail.com')
-                  ->update(['email' => 'useremail@gmail.com', 'name' => 'User name']);
+                  ->update(['email' => 'useremailaddress@yahoo.com', 'name' => 'user name after update']);  
             $this->assertEquals(1, $result);
       }
       public function testItCanDeleteRecord()
       {
-            $this->InserIntoDb();
-            $this->InserIntoDb();
-            $this->InserIntoDb();
-            $this->InserIntoDb();
+            $this->insertIntoDb();
+            $this->insertIntoDb();
+            $this->insertIntoDb();
+            $this->insertIntoDb();
 
             $result = $this->queryBuilder
                   ->table('bugs')
@@ -48,7 +46,7 @@ class PDOQueryBuilderTest extends TestCase
                   ->delete();
             $this->assertEquals(4, $result);
       }
-      private function InserIntoDb()
+      private function insertIntoDb()
       {
             $data = [
                   'name' => 'First Bug Report',
@@ -62,9 +60,10 @@ class PDOQueryBuilderTest extends TestCase
       {
             return Config::get('database', 'pdo_testing');
       }
+      
       public function tearDown(): void
       {
-            $this->queryBuilder->truncateAllTable();
+            $this->queryBuilder->truncateAllTable(); 
             parent::tearDown();
       }
 }
