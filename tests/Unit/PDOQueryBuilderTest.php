@@ -23,6 +23,17 @@ class PDOQueryBuilderTest extends TestCase
             $this->assertIsInt($result);
             $this->assertGreaterThan(0, $result);
       }
+      public function testItcanUpdateWithMultipleWhere()
+      {
+            $this->insertIntoDb();
+            $this->insertIntoDb(['user' => 'sara']);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('user', 'User Name')
+                  ->where('link', 'http://link.com')
+                  ->update(['name' => 'after multiple where']);
+            $this->assertEquals(1, $result);
+      }
       public function testItCanUpdateData()
       {
             $this->insertIntoDb();
@@ -30,7 +41,7 @@ class PDOQueryBuilderTest extends TestCase
             $result = $this->queryBuilder
                   ->table('bugs')
                   ->where('user', 'User Name')
-                  ->update(['email' => 'useremailaddress@yahoo.com', 'name' => 'user name after update']);  
+                  ->update(['email' => 'useremailaddress@yahoo.com', 'name' => 'user name after update']);
             $this->assertEquals(1, $result);
       }
       public function testItCanDeleteRecord()
@@ -46,24 +57,24 @@ class PDOQueryBuilderTest extends TestCase
                   ->delete();
             $this->assertEquals(4, $result);
       }
-      private function insertIntoDb()
+      private function insertIntoDb($options = [])
       {
-            $data = [
+            $data = array_merge([
                   'name' => 'First Bug Report',
                   'link' => 'http://link.com',
                   'user' => 'User Name',
                   'email' => 'EmailAddress@gmail.com'
-            ];
+            ], $options);
             return $this->queryBuilder->table('bugs')->create($data);
       }
       private function getConfig()
       {
             return Config::get('database', 'pdo_testing');
       }
-      
+
       public function tearDown(): void
       {
-            $this->queryBuilder->truncateAllTable(); 
+            $this->queryBuilder->truncateAllTable();
             parent::tearDown();
       }
 }
