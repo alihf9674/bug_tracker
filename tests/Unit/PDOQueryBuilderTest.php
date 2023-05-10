@@ -32,16 +32,19 @@ class PDOQueryBuilderTest extends TestCase
                   ->where('user', 'User Name')
                   ->where('link', 'http://link.com')
                   ->update(['name' => 'after multiple where']);
+
             $this->assertEquals(1, $result);
       }
       public function testItCanUpdateData()
       {
             $this->insertIntoDb();
-
             $result = $this->queryBuilder
                   ->table('bugs')
                   ->where('user', 'User Name')
-                  ->update(['email' => 'useremailaddress@yahoo.com', 'name' => 'user name after update']);
+                  ->update([
+                        'email' => 'useremailaddress@yahoo.com', 'name' => 'user name after update'
+                  ]);
+
             $this->assertEquals(1, $result);
       }
       public function testItCanDeleteRecord()
@@ -50,12 +53,23 @@ class PDOQueryBuilderTest extends TestCase
             $this->insertIntoDb();
             $this->insertIntoDb();
             $this->insertIntoDb();
-
             $result = $this->queryBuilder
                   ->table('bugs')
                   ->where('name', 'First Bug Report')
                   ->delete();
+
             $this->assertEquals(4, $result);
+      }
+      public function testItCanFetchData()
+      {
+            $this->multipleInsertIntoDb(10);
+            $this->multipleInsertIntoDb(10, ['user' => 'Cyrus']);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('user', 'Cyrus')->get();
+
+            $this->assertIsArray($result);
+            $this->assertCount(10, $result);
       }
       private function insertIntoDb($options = [])
       {
@@ -65,13 +79,19 @@ class PDOQueryBuilderTest extends TestCase
                   'user' => 'User Name',
                   'email' => 'EmailAddress@gmail.com'
             ], $options);
+
             return $this->queryBuilder->table('bugs')->create($data);
       }
       private function getConfig()
       {
             return Config::get('database', 'pdo_testing');
       }
-
+      private function multipleInsertIntoDb($count, $options = [])
+      {
+            for ($i = 1; $i <= $count; $i++) {
+                  $this->insertIntoDb($options);
+            }
+      }
       public function tearDown(): void
       {
             $this->queryBuilder->truncateAllTable();
