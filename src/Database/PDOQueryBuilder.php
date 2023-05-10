@@ -21,6 +21,15 @@ class PDOQueryBuilder
             $this->table = $table;
             return $this;
       }
+
+      public function get()
+      {
+            $conditions = implode(' AND ', $this->conditions);
+            $sql = "SELECT * FROM {$this->table} WHERE {$conditions}";
+            $query = $this->connection->prepare($sql);
+            $query->execute($this->values);
+            return $query->fetchAll();
+      }
       public function create(array $data)
       {
             $palceholder = [];
