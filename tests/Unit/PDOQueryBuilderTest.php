@@ -47,6 +47,22 @@ class PDOQueryBuilderTest extends TestCase
 
             $this->assertEquals(1, $result);
       }
+      public function testItCanFetchSpecificColumns()
+      {
+
+            $this->multipleInsertIntoDb(10);
+            $this->multipleInsertIntoDb(10, ['name' => 'New']);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('name', 'New')
+                  ->get(['name', 'user']);
+
+            $this->assertIsArray($result);
+            $this->assertObjectHasAttribute('name', $result[0]);
+            $this->assertObjectHasAttribute('user', $result[0]);
+            $result = json_decode(json_encode($result[0]), true);
+            $this->assertEquals(['name', 'user'], array_keys($result));
+      }
       public function testItCanDeleteRecord()
       {
             $this->insertIntoDb();
