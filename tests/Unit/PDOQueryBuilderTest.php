@@ -78,6 +78,29 @@ class PDOQueryBuilderTest extends TestCase
             $this->assertObjectHasAttribute('email', $result);
             $this->assertObjectHasAttribute('user', $result);
       }
+
+      public function testItCanFindWithId()
+      {
+            $this->insertIntoDb();
+            $id = $this->insertIntoDb(['name' => 'Find']);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->find($id);
+
+            $this->assertIsObject($result);
+            $this->assertEquals('Find', $result->name);
+      }
+      public function testItCanFindBy()
+      {
+            $this->insertIntoDb();
+            $id = $this->insertIntoDb(['name' => 'Find By']);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->findBy('name', 'Find By');
+
+            $this->assertIsObject($result);
+            $this->assertEquals($id, $result->id);
+      }
       public function testItCanDeleteRecord()
       {
             $this->insertIntoDb();

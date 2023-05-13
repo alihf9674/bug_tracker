@@ -36,6 +36,14 @@ class PDOQueryBuilder
             $data = $this->get($columns);
             return empty($data) ? null : $data[0];
       }
+      public function find($id)
+      {
+            return $this->where('id', $id)->first();
+      }
+      public function findBy(string $column, $value)
+      {
+            return $this->where($column, $value)->first();
+      }
       public function create(array $data)
       {
             $palceholder = [];
