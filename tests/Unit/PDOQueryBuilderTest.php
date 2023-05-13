@@ -63,6 +63,21 @@ class PDOQueryBuilderTest extends TestCase
             $result = json_decode(json_encode($result[0]), true);
             $this->assertEquals(['name', 'user'], array_keys($result));
       }
+      public function testItCanGetFirstRow()
+      {
+            $this->multipleInsertIntoDb(10, ['name' => 'First Row']);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('name', 'First Row')
+                  ->first();
+
+            $this->assertIsObject($result);
+            $this->assertObjectHasAttribute('id', $result);
+            $this->assertObjectHasAttribute('name', $result);
+            $this->assertObjectHasAttribute('link', $result);
+            $this->assertObjectHasAttribute('email', $result);
+            $this->assertObjectHasAttribute('user', $result);
+      }
       public function testItCanDeleteRecord()
       {
             $this->insertIntoDb();
