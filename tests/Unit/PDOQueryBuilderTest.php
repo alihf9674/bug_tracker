@@ -116,12 +116,22 @@ class PDOQueryBuilderTest extends TestCase
       }
       public function testItReturnEmptyArrayWhenRecordNotFound()
       {
+            $this->multipleInsertIntoDb(5);
             $result = $this->queryBuilder
                   ->table('bugs')
                   ->where('user', 'Dummy')
                   ->get();
             $this->assertIsArray($result);
             $this->assertEmpty($result);
+      }
+      public function testItReturnNullWhenFirstRecordNotFound()
+      {
+            $this->multipleInsertIntoDb(5);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('user', 'Dummy')
+                  ->first();
+            $this->assertNull($result);
       }
       public function testItCanFetchData()
       {
