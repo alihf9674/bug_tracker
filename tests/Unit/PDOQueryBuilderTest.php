@@ -114,6 +114,16 @@ class PDOQueryBuilderTest extends TestCase
 
             $this->assertEquals(4, $result);
       }
+      public function testItReturnsZeroWhenRecordNotFoundForUpdate()
+      {
+            $this->multipleInsertIntoDb(5);
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('user', 'dummy')
+                  ->update(['name' => 'test']);
+
+            $this->assertEquals(0, $result);
+      }
       public function testItReturnEmptyArrayWhenRecordNotFound()
       {
             $this->multipleInsertIntoDb(5);
