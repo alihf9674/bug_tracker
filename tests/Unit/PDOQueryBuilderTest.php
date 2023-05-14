@@ -114,6 +114,15 @@ class PDOQueryBuilderTest extends TestCase
 
             $this->assertEquals(4, $result);
       }
+      public function testItReturnEmptyArrayWhenRecordNotFound()
+      {
+            $result = $this->queryBuilder
+                  ->table('bugs')
+                  ->where('user', 'Dummy')
+                  ->get();
+            $this->assertIsArray($result);
+            $this->assertEmpty($result);
+      }
       public function testItCanFetchData()
       {
             $this->multipleInsertIntoDb(10);
