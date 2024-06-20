@@ -18,6 +18,7 @@ class PDODatabaseConnectionTest extends TestCase
             $pdoConnection = new PDODatabaseConnection($config);
             $this->assertInstanceOf(DatabaseConnectionInterface::class, $pdoConnection);
       }
+
       public function testConnectMethodShouldReturnValidInstance()
       {
             $config = $this->getConfig();
@@ -26,6 +27,7 @@ class PDODatabaseConnectionTest extends TestCase
             $this->assertInstanceOf(PDODatabaseConnection::class, $pdoHandler);
             return $pdoHandler;
       }
+
       /**
        * @depends testConnectMethodShouldReturnValidInstance
        */
@@ -33,14 +35,16 @@ class PDODatabaseConnectionTest extends TestCase
       {
             $this->assertInstanceOf(PDO::class, $pdoHandler->getConnection());
       }
+
       public function testItThrowsExceptionIfConfigIsInvalid()
       {
             $this->expectException(DatabaseConnectionException::class);
             $config = $this->getConfig();
-            $config['database'] = 'test';
+            $config['database'] = 'dummy';
             $pdoConnection = new PDODatabaseConnection($config);
             $pdoConnection->connect();
       }
+
       public function testReceivedConfigHaveRequiredKey()
       {
             $this->expectException(ConfigNotValidException::class);
@@ -49,6 +53,7 @@ class PDODatabaseConnectionTest extends TestCase
             $pdoConnection = new PDODatabaseConnection($config);
             $pdoConnection->connect();
       }
+
       private function getConfig()
       {
             return Config::get('database', 'pdo_testing');

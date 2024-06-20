@@ -13,6 +13,7 @@ class Config
                   throw new CofigFileNotFoundException();
             return require $filePath;
       }
+      
       public static function get(string $file_name, string $key = null)
       {
             $fileContents = self::getFileContents($file_name);

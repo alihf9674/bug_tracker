@@ -4,6 +4,7 @@ namespace App\Database;
 
 use PDO;
 use App\Contracts\DatabaseConnectionInterface;
+use PDOStatement;
 
 class PDOQueryBuilder
 {
@@ -17,32 +18,23 @@ class PDOQueryBuilder
       {
             $this->connection = $connection->getConnection();
       }
+
       public function table(string $table)
       {
             $this->table = $table;
             return $this;
       }
 
-      public function get(array $columns = ['*'])
+      public function beginTransaction()
       {
-            $columns = implode(', ', $columns);
-            $sql = "SELECT {$columns} FROM {$this->table} WHERE {$this->conditions}";
-            $this->execute($sql);
-            return $this->statement->fetchAll();
+            $this->connection->beginTransaction();
       }
-      public function first(array $columns = ['*'])
+
+      public function rollBack()
       {
-            $data = $this->get($columns);
-            return empty($data) ? null : $data[0];
+            $this->connection->rollback();
       }
-      public function find($id)
-      {
-            return $this->where('id', $id)->first();
-      }
-      public function findBy(string $column, $value)
-      {
-            return $this->where($column, $value)->first();
-      }
+
       public function create(array $data)
       {
             $palceholder = [];
@@ -57,15 +49,6 @@ class PDOQueryBuilder
             return (int)$this->connection->lastInsertId();
       }
 
-      public function where(string $column, string $value)
-      {
-            if (is_null($this->conditions))
-                  $this->conditions = "{$column}=?";
-            else
-                  $this->conditions .= "AND {$column}=?";
-            $this->values[] = $value;
-            return $this;
-      }
       public function update(array $data)
       {
             $fields = [];
@@ -77,6 +60,49 @@ class PDOQueryBuilder
             $this->execute($sql);
             return $this->statement->rowCount();
       }
+
+      public function delete()
+      {
+            $sql = "DELETE FROM {$this->table} WHERE {$this->conditions}";
+            $this->execute($sql);
+            return $this->statement->rowCount();
+      }
+
+
+      public function get(array $columns = ['*'])
+      {
+            $columns = implode(', ', $columns);
+            $sql = "SELECT {$columns} FROM {$this->table} WHERE {$this->conditions}";
+            $this->execute($sql);
+            return $this->statement->fetchAll();
+      }
+
+      public function first(array $columns = ['*'])
+      {
+            $data = $this->get($columns);
+            return empty($data) ? null : $data[0];
+      }
+
+      public function find($id)
+      {
+            return $this->where('id', $id)->first();
+      }
+
+      public function findBy(string $column, $value)
+      {
+            return $this->where($column, $value)->first();
+      }
+
+      public function where(string $column, string $value)
+      {
+            if (is_null($this->conditions))
+                  $this->conditions = "{$column}=?";
+            else
+                  $this->conditions .= "AND {$column}=?";
+            $this->values[] = $value;
+            return $this;
+      }
+
       public function truncateAllTable()
       {
             $query = $this->connection->prepare("SHOW TABLES");
@@ -85,12 +111,7 @@ class PDOQueryBuilder
                   $this->connection->prepare("TRUNCATE TABLE `{$table}`")->execute();
             }
       }
-      public function delete()
-      {
-            $sql = "DELETE FROM {$this->table} WHERE {$this->conditions}";
-            $this->execute($sql);
-            return $this->statement->rowCount();
-      }
+
       private function execute(string $sql)
       {
             $this->statement = $this->connection->prepare($sql);

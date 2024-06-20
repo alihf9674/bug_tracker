@@ -14,7 +14,11 @@ class PDODatabaseConnection implements DatabaseConnectionInterface
       protected $connection;
       protected $config;
       const REQUIRED_CONFIG_KEYS = [
-            'driver', 'host', 'database', 'db_user', 'db_password'
+            'driver',
+            'host',
+            'database',
+            'db_user',
+            'db_password'
       ];
 
       public function __construct(array $config)
